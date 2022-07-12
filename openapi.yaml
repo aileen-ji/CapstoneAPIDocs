@@ -24,9 +24,13 @@ paths:
                   type: string
                 password:
                   type: string
+              required:
+                  - email
+                  - password
               example:
                 email: me@mail.com
-                password: pw     
+                password: pw 
+               
       responses:
         "200":
           description: Success
@@ -257,6 +261,7 @@ paths:
                 error:
                   message: Missing courseTitle in request body.
                   status: 400
+                  
   "/learning/:sportName/beginner":
     get:
       tags: ["learning"]
