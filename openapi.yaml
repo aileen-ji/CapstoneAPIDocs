@@ -143,17 +143,18 @@ paths:
                   message: Unauthorized
                   status: 401
 
-  "/1/learning/:sportName":
+  "/1/learning/:{sportName}":
     get:
       tags: ["learning"]
       summary: returns list of courses for a sport
       parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
       responses:
         "200":
           description: OK
@@ -212,11 +213,12 @@ paths:
       summary: creates a new user created course under the sport listed
       parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
       requestBody: 
         content:
           application/json:
@@ -276,17 +278,18 @@ paths:
                   message: Missing courseTitle in request body.
                   status: 400
                   
-  "/1/learning/:sportName/beginner":
+  "/1/learning/:{sportName}/beginner":
     get:
       tags: ["learning"]
       summary: returns the beginner course for a sport
       parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
       responses:
         "200":
           description: OK
@@ -313,23 +316,25 @@ paths:
                   message: "course does not exist"
                   status: 404
                   
-  "/1/learning/:sportName/userCreated/:courseId":
+  "/1/learning/:{sportName}/userCreated/:{courseId}":
     get:
       tags: ["learning"]
       summary: returns a specific user created course for a sport
       parameters:
          - name: sportName
-           in: query
+           in: path
            description: name of the sport 
            schema:
              type: string
            example: basketball
+           required: true
          - name: courseId
-           in: query
+           in: path
            description: Id of the user created course
            schema:
              type: integer
            example: 6
+           required: true
       responses:
         "200":
           description: OK
@@ -357,23 +362,25 @@ paths:
                   message: "course does not exist"
                   status: 404
 
-  "/1/home/:sportName/:teamId":
+  "/1/home/:{sportName}/:{teamId}":
     get:
       tags: ["home"]
       summary: returns detailed information about a specific team
       parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
            - name: teamId
-             in: query
+             in: path
              description: id of the team 
              schema:
                type: integer
              example: 139
+             required: true
       responses:
         "200":
           description: OK
@@ -416,17 +423,19 @@ paths:
       summary: allows the user to follow a specific team
       parameters:
          - name: sportName
-           in: query
+           in: path
            description: name of the sport 
            schema:
              type: string
            example: basketball
+           required: true
          - name: teamId
-           in: query
+           in: path
            description: id of the team 
            schema:
              type: integer
            example: 139
+           required: true
       requestBody: 
         content:
           application/json:
@@ -453,17 +462,18 @@ paths:
                   message: You already followed this team.
                   status: 400
                   
-  "/1/home/:sportName":
+  "/1/home/:{sportName}":
     get:
       tags: ["home"]
       summary: returns teams of a specific sport
       parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
       responses:
         "200":
           description: OK
@@ -486,17 +496,18 @@ paths:
                   message: Sport not found
                   status: 404
          
-  "/1/home/:sportName/matches":
+  "/1/home/:{sportName}/matches":
     get:
       tags: ["home"]
       summary: returns the three most recent matches of a specific sport
       parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
       responses:
         "200":
           description: OK
@@ -532,17 +543,18 @@ paths:
                         over_time: null
                         total: 97
                 
-  "/1/home/:sportName/news":
+  "/1/home/:{sportName}/news":
     get:
         tags: ["home"]
         summary: returns the latest news of a specific sport
         parameters:
            - name: sportName
-             in: query
+             in: path
              description: name of the sport 
              schema:
                type: string
              example: basketball
+             required: true
         responses:
           "200":
             description: OK
