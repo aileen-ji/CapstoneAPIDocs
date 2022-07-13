@@ -2,7 +2,7 @@ openapi: 3.0.3
 
 info:
   title: Referee's Handbook API 
-  description: API for Referee's Handbook, pod w3's capstone project for Codepath's SITE program 2022
+  description: API for Referee's Handbook, pod w3's capstone project for Codepath's SITE program 2022.
   version: 0.1.0
   
 servers:
@@ -10,7 +10,7 @@ servers:
   description: JSONPlaceholder
   
 paths:
-  "/auth/login":
+  "/1/auth/login":
     post:
       tags: ["auth"]
       summary: User can login with valid credentials.
@@ -55,7 +55,7 @@ paths:
                   message: Invalid email/password combo
                   status: 401
           
-  "/auth/register":
+  "/1/auth/register":
     post:
       tags: ["auth"]
       summary: User can register with valid credentials.
@@ -117,7 +117,7 @@ paths:
                   message: "Duplicate email: me@mail.com"
                   status: 400
 
-  "/auth/me":
+  "/1/auth/me":
     get:
       tags: ["auth"]
       summary: get one user's profile information
@@ -143,7 +143,7 @@ paths:
                   message: Unauthorized
                   status: 401
 
-  "/learning/:sportName":
+  "/1/learning/:sportName":
     get:
       tags: ["learning"]
       summary: returns list of courses for a sport
@@ -262,7 +262,7 @@ paths:
                   message: Missing courseTitle in request body.
                   status: 400
                   
-  "/learning/:sportName/beginner":
+  "/1/learning/:sportName/beginner":
     get:
       tags: ["learning"]
       summary: returns the beginner course for a sport
@@ -292,7 +292,7 @@ paths:
                   message: "course does not exist"
                   status: 404
                   
-  "/learning/:sportName/userCreated/:courseId":
+  "/1/learning/:sportName/userCreated/:courseId":
     get:
       tags: ["learning"]
       summary: returns a specific user created course for a sport
@@ -323,18 +323,165 @@ paths:
                   message: "course does not exist"
                   status: 404
 
-  # "/home/:sportName/:teamId":
-  #   get:
-  #     tags: ["home"]
-  #     summary: returns detailed information about a specific team
-  #     responses:
-  #       "200":
-  #         description: OK
-  #         content:
-  #           application/json:
-  #             example:
+  "/1/home/:sportName/:teamId":
+    get:
+      tags: ["home"]
+      summary: returns detailed information about a specific team
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                statistics:
+                  country:
+                    id: 5
+                    name: USA
+                    code: US
+                    flag: "https://media.api-football.com/flags/us.svg"
+                  team:
+                    id: 139
+                    name: "Denver Nuggets"
+                    logo: null
+                  quickStats:
+                    played: 
+                      home: 9
+                      away: 9
+                      all: 18
+                    wins: 15
+                    draws: 0
+                    loses: 3
+                recentGames:
+                  - id: 1911
+                    date: "2019-11-23T00:30:00+00:00"
+                    status: FT
+                    result: win
+                    court: home
+                    opponent:
+                      id: 157
+                      name: Sacramento Kings
+                      logo: null
+                    scores:
+                      home: 116
+                      away: 97
+    post:
+      tags: ["home"]
+      summary: allows the user to follow a specific team
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: integer
+      responses:
+        "201":
+          description: success
+          content:
+            application/json:
+              example:
+                userId: 1
+                teamId: 13
+                followingAt: "2019-06-24-15.30.20"
+        "400":
+          description: bad request
+          content:
+            application/json:
+              example:
+                error:
+                  message: You already followed this team.
+                  status: 400
+                  
+  "/1/home/:sportName":
+    get:
+      tags: ["home"]
+      summary: returns teams of a specific sport
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example: 
+                teams:
+                  - id: 139
+                    name: Denver Nuggets
+                    logo: null
+                  - id: 137
+                    name: Cleveland Cavaliers
+                    logo: null
+        "404":
+          description: not found
+          content:
+            application/json:
+              example:
+                error:
+                  message: Sport not found
+                  status: 404
+         
+  "/1/home/:sportName/matches":
+    get:
+      tags: ["home"]
+      summary: returns the three most recent matches of a specific sport
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              example:
+                games:
+                  - id: 1911
+                    date: "2019-11-23T00:30:00+00:00"
+                    status: FT
+                    teams:
+                      home:
+                        id: 139
+                        name: Denver Nuggets
+                        logo: null
+                      away:
+                        id: 157
+                        name: Sacramento Kings
+                        logo: null
+                    scores:
+                      home: 
+                        quarter_1: 26
+                        quarter_2: 26
+                        quarter_3: 30
+                        quarter_4: 30
+                        over_time: null
+                        total: 116
+                      away: 
+                        quarter_1: 23
+                        quarter_2: 26
+                        quarter_3: 21
+                        quarter_4: 27
+                        over_time: null
+                        total: 97
                 
-            
+  "/1/home/:sportName/news":
+    get:
+        tags: ["home"]
+        summary: returns the latest news of a specific sport
+        responses:
+          "200":
+            description: OK
+            content: 
+              application/json:
+                example:
+                  - "uuid": "387fecb4-20c2-48b4-8b54-95313592b433"
+                    "title": "Forwards Max Domi, Andreas Athanasiou sign with rebuilding Chicago Blackhawks, sources say"
+                    "description": "Free-agent forwards Max Domi and Andreas Athanasiou signed with the rebuilding Chicago Blackhawks, on identical one-year, $3 million deals, sources told ESPN on..."
+                    "keywords": "news, NHL, Chicago Blackhawks, Andreas Athanasiou, Max Domi"
+                    "snippet": "Free-agent forwards Max Domi and Andreas Athanasiou signed with the Chicago Blackhawks, on identical one-year, $3 million deals, sources told ESPN on Wednesday...."
+                    "url": "https://www.espn.com/nhl/story/_/id/34237204/forwards-max-domi-andreas-athanasiou-sign-rebuilding-chicago-blackhawks-sources-say"
+                    "image_url": "https://a2.espncdn.com/combiner/i?img=/photo/2022/0629/r1030262_1296x729_16-9.jpg"
+                    "language": "en"
+                    "published_at": "2022-07-13T18:07:08.000000Z"
+                    "source": "espn.com"
+                    "categories": [
+                        "sports"
+                    ]
+                    "relevance_score": null
 
 components:
   schemas:
