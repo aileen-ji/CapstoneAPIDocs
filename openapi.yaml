@@ -147,6 +147,13 @@ paths:
     get:
       tags: ["learning"]
       summary: returns list of courses for a sport
+      parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
       responses:
         "200":
           description: OK
@@ -203,6 +210,13 @@ paths:
     post:
       tags: ["learning"]
       summary: creates a new user created course under the sport listed
+      parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
       requestBody: 
         content:
           application/json:
@@ -266,6 +280,13 @@ paths:
     get:
       tags: ["learning"]
       summary: returns the beginner course for a sport
+      parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
       responses:
         "200":
           description: OK
@@ -296,6 +317,19 @@ paths:
     get:
       tags: ["learning"]
       summary: returns a specific user created course for a sport
+      parameters:
+         - name: sportName
+           in: query
+           description: name of the sport 
+           schema:
+             type: string
+           example: basketball
+         - name: courseId
+           in: query
+           description: Id of the user created course
+           schema:
+             type: integer
+           example: 6
       responses:
         "200":
           description: OK
@@ -327,6 +361,19 @@ paths:
     get:
       tags: ["home"]
       summary: returns detailed information about a specific team
+      parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+           - name: teamId
+             in: query
+             description: id of the team 
+             schema:
+               type: integer
+             example: 139
       responses:
         "200":
           description: OK
@@ -367,6 +414,19 @@ paths:
     post:
       tags: ["home"]
       summary: allows the user to follow a specific team
+      parameters:
+         - name: sportName
+           in: query
+           description: name of the sport 
+           schema:
+             type: string
+           example: basketball
+         - name: teamId
+           in: query
+           description: id of the team 
+           schema:
+             type: integer
+           example: 139
       requestBody: 
         content:
           application/json:
@@ -397,6 +457,13 @@ paths:
     get:
       tags: ["home"]
       summary: returns teams of a specific sport
+      parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
       responses:
         "200":
           description: OK
@@ -423,6 +490,13 @@ paths:
     get:
       tags: ["home"]
       summary: returns the three most recent matches of a specific sport
+      parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
       responses:
         "200":
           description: OK
@@ -462,6 +536,13 @@ paths:
     get:
         tags: ["home"]
         summary: returns the latest news of a specific sport
+        parameters:
+           - name: sportName
+             in: query
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
         responses:
           "200":
             description: OK
