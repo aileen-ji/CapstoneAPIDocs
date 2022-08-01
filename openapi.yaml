@@ -3,14 +3,14 @@ openapi: 3.0.3
 info:
   title: Referee's Handbook API 
   description: API for Referee's Handbook, pod w3's capstone project for Codepath's SITE program 2022.
-  version: 0.1.0
+  version: 0.2.0
   
 servers:
 - url: https://jsonplaceholder.typicode.com
   description: JSONPlaceholder
   
 paths:
-  "/1/auth/login":
+  "/2/auth/login":
     post:
       tags: ["auth"]
       summary: User can login with valid credentials.
@@ -43,6 +43,9 @@ paths:
                   firstName: Doug
                   lastName: Case
                   username: dougcase
+                  location: here
+                  profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
+                  createdAt": "2022-07-27T17:09:57.019Z"
                 token: myToken
               schema:
                 $ref: "#/components/schemas/user"   
@@ -55,7 +58,7 @@ paths:
                   message: Invalid email/password combo
                   status: 401
           
-  "/1/auth/register":
+  "/2/auth/register":
     post:
       tags: ["auth"]
       summary: User can register with valid credentials.
@@ -77,6 +80,8 @@ paths:
                   type: string
                 location:
                   type: string
+                profile_image_url:
+                  type: string
           
               example:
                 email: me@mail.com
@@ -84,7 +89,8 @@ paths:
                 firstName: Doug
                 lastName: Case
                 username: dougcase
-                location: Sunnyvale, CA
+                location: here
+                profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
               required:
                 - email
                 - password
@@ -105,6 +111,9 @@ paths:
                   firstName: Doug
                   lastName: Case
                   username: dougcase
+                  location: here
+                  profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
+                  createdAt": "2022-07-27T17:09:57.019Z"
                 token: myToken
               schema:
                 $ref: "#/components/schemas/user"   
@@ -117,7 +126,7 @@ paths:
                   message: "Duplicate email: me@mail.com"
                   status: 400
 
-  "/1/auth/me":
+  "/2/auth/me":
     get:
       tags: ["auth"]
       summary: get one user's profile information
@@ -134,6 +143,9 @@ paths:
                 firstName: Doug
                 lastName: Case
                 username: dougcase
+                location: here
+                profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
+                createdAt": "2022-07-27T17:09:57.019Z"
         "401":
           description: Unauthorized
           content:
@@ -143,7 +155,7 @@ paths:
                   message: Unauthorized
                   status: 401
 
-  "/1/learning/:{sportName}":
+  "/2/learning/:{sportName}":
     get:
       tags: ["learning"]
       summary: returns list of courses for a sport
@@ -177,11 +189,11 @@ paths:
                     items:
                       type: object
                       properties:
-                        courseShortDescription:
+                        detailedDescription:
                           type: string
-                        courseCoverImageURL:
+                        coverImageURL:
                           type: string     
-                        courseTitle:
+                        courseName:
                           type: string
                         id:
                           type: integer
@@ -192,13 +204,13 @@ paths:
                   beginnerShortDescription: Learn about the world's most popular sport
                 userCreated:
                   - id: 1
-                    courseTitle: the roulette
-                    courseShortDescription: learn this legendary spin move.
-                    courseCoverImageURL: "https://live.staticflickr.com/60/226892814_1fe4503669_b.jpg"
+                    courseName: the roulette
+                    detailedDescription: learn this legendary spin move.
+                    coverImageURL: "https://live.staticflickr.com/60/226892814_1fe4503669_b.jpg"
                   - id: 2
-                    courseTitle: the rainbow flick
-                    courseShortDescription: impressive move, though rarely used in games.
-                    courseCoverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
+                    courseName: the rainbow flick
+                    detailedDescription: impressive move, though rarely used in games.
+                    coverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
                 
         "404":
           description: not found
@@ -225,32 +237,40 @@ paths:
             schema:
               type: object
               properties:
-                courseTitle:
+                courseName:
                   type: string
-                courseShortDescription:
+                detailedDescription:
                   type: string
-                courseCoverImageURL:
+                coverImageURL:
                   type: string
-                courseContent:
+                shortDescription:
                   type: string
-                courseTutorialVideoURL:
+                tutorialVideoURL:
                   type: string
-                courseTipsTricks:
+                tipsAndTricks:
+                  type: string
+                difficulty:
+                  type: string
+                sportName:
                   type: string
               example:
-                courseTitle: curveball throwing
-                courseShortDescription: a short tutorial on throwing curveballs.
-                courseCoverImageURL: "https://www.publicdomainpictures.net/pictures/90000/nahled/smokin-baseball.jpg"
-                courseContent: Hold the baseball properly.
-                courseTutorialVideoURL: "https://www.youtube.com/watch?v=XJYH3M1Pxbc"
-                courseTipsTricks: Keep your grip hidden.
+                courseName: curveball throwing
+                detailedDescription: a short tutorial on throwing curveballs.
+                coverImageURL: "https://www.publicdomainpictures.net/pictures/90000/nahled/smokin-baseball.jpg"
+                shortDescription: Hold the baseball properly.
+                tutorialVideoURL: "https://www.youtube.com/watch?v=XJYH3M1Pxbc"
+                tipsAndTricks: Keep your grip hidden.
+                difficulty: high school
+                sportName: baseball
               required:
-                - courseTitle
-                - courseShortDescription
-                - courseCoverImageURL
-                - courseContent
-                - courseTutorialVideoURL
-                - courseTipsTricks
+                - courseName
+                - detailedDescription
+                - coverImageURL
+                - shortDescription
+                - tutorialVideoURL
+                - tipsAndTricks
+                - difficulty
+                - sportName
       responses:
         "200":
           description: OK
@@ -262,12 +282,13 @@ paths:
                 id: 1
                 sportName: baseball
                 UserId: 1
-                courseTitle: curveball throwing
-                courseShortDescription: a short tutorial on throwing curveballs.
-                courseCoverImageURL: "https://www.publicdomainpictures.net/pictures/90000/nahled/smokin-baseball.jpg"
-                courseContent: Hold the baseball properly.
-                courseTutorialVideoURL: "https://www.youtube.com/watch?v=XJYH3M1Pxbc"
-                courseTipsTricks: Keep your grip hidden.
+                courseName: curveball throwing
+                detailedDescription: a short tutorial on throwing curveballs.
+                coverImageURL: "https://www.publicdomainpictures.net/pictures/90000/nahled/smokin-baseball.jpg"
+                shortDescription: Hold the baseball properly.
+                tutorialVideoURL: "https://www.youtube.com/watch?v=XJYH3M1Pxbc"
+                tipsAndTricks: Keep your grip hidden.
+                difficulty: high school
                 createdAt: "2019-06-24-15.30.20"
         "400":
           description: bad request
@@ -275,10 +296,40 @@ paths:
             application/json:
               example:
                 error:
-                  message: Missing courseTitle in request body.
+                  message: Missing courseName in request body.
                   status: 400
-                  
-  "/1/learning/:{sportName}/beginner":
+  
+  "/2/learning":
+    get:
+      tags: ["learning"]
+      summary: returns the beginner courses
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beginner"
+              example:
+                id: 1
+                sport_name: basketball
+                beginnerHistoryTimeline: "https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1xuY4upIooEeszZ_lCmeNx24eSFWe0rHe9ZdqH2xqVNk&font=Default&lang=en&initial_zoom=2&height=100%"
+                beginnerRules: Score more points than the other team to win
+                beginnerShortDescription: Learn about the sport of basketball
+                beginnerCoverImage_URL: "https://img.rawpixel.com/private/static/images/website/2022-05/upwk61914619-wikimedia-image-kowebq0k.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=1eb3b7dcd268b9a9eba66f624512f434"
+                beginnerTutorialVideoURL: "https://www.youtube.com/watch?v=CMQp0bwjokw&ab_channel=GetHandlesBasketball"
+                beginnerFieldDiagramURL: "https://cdn2.picryl.com/photo/2012/03/29/the-warrior-fitness-centers-three-basketball-courts-3a919f-1600.jpg"
+                createdAt: "2019-06-24-15.30.20"
+        "404":
+          description: not found
+          content: 
+            application/json:
+              example:
+                error:
+                  message: "course does not exist"
+                  status: 404
+  
+  "/2/learning/:{sportName}/beginner":
     get:
       tags: ["learning"]
       summary: returns the beginner course for a sport
@@ -316,7 +367,7 @@ paths:
                   message: "course does not exist"
                   status: 404
                   
-  "/1/learning/:{sportName}/userCreated/:{courseId}":
+  "/2/learning/:{sportName}/userCreated/:{courseId}":
     get:
       tags: ["learning"]
       summary: returns a specific user created course for a sport
@@ -345,13 +396,14 @@ paths:
               example:
                 id: 1
                 userId: 3
-                sport_name: soccer
-                courseTitle: the rainbow flick
-                courseShortDescription: impressive move, though rarely used in games.
-                courseContent: learn to flick the soccer ball over your head by watching the tutorial video.
-                courseCoverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
-                courseTutorialVideoURL: "https://www.youtube.com/watch?v=aQtcAwE4xHA&feature=emb_logo&ab_channel=Unisport"
-                courseTipsTricks: practice from a standing position first.
+                sportName: soccer
+                courseName: the rainbow flick
+                detailedDescription: impressive move, though rarely used in games.
+                shortDescription: learn to flick the soccer ball over your head by watching the tutorial video.
+                coverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
+                tutorialVideoURL: "https://www.youtube.com/watch?v=aQtcAwE4xHA&feature=emb_logo&ab_channel=Unisport"
+                tipsAndTricks: practice from a standing position first.
+                difficulty: amature
                 createdAt: "2019-06-24-15.30.20"
         "404":
           description: not found
@@ -361,11 +413,102 @@ paths:
                 error:
                   message: "course does not exist"
                   status: 404
+    delete:
+      tags: ["learning"]
+      summary: deletes a user created course
+      description: deletes a user created course
+      parameters:
+         - name: sportName
+           in: path
+           description: name of the sport 
+           schema:
+             type: string
+           example: basketball
+           required: true
+         - name: courseId
+           in: path
+           description: Id of the user created course
+           schema:
+             type: integer
+           example: 6
+           required: true
+      responses:
+        "204":
+          description: No content
+          content: 
+            application/json:
+              example:
+                null
+    put:
+      tags: ["learning"]
+      summary: updates a user created course
+      parameters:
+         - name: sportName
+           in: path
+           description: name of the sport 
+           schema:
+             type: string
+           example: basketball
+           required: true
+         - name: courseId
+           in: path
+           description: Id of the user created course
+           schema:
+             type: integer
+           example: 6
+           required: true
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseName:
+                  type: string
+                detailedDescription:
+                  type: string
+                coverImageURL:
+                  type: string
+                shortDescription:
+                  type: string
+                tutorialVideoURL:
+                  type: string
+                tipsAndTricks:
+                  type: string
+                difficulty:
+                  type: string
+                sportName:
+                  type: string
+              example:
+                courseName: curveball throwing
+                detailedDescription: a short tutorial on throwing curveballs.
+                coverImageURL: "https://www.publicdomainpictures.net/pictures/90000/nahled/smokin-baseball.jpg"
+                shortDescription: Hold the baseball properly.
+                tutorialVideoURL: "https://www.youtube.com/watch?v=XJYH3M1Pxbc"
+                tipsAndTricks: Keep your grip hidden.
+                difficulty: high school
+                sportName: baseball
+              required:
+                - courseName
+                - detailedDescription
+                - coverImageURL
+                - shortDescription
+                - tutorialVideoURL
+                - tipsAndTricks
+                - difficulty
+                - sportName
+      responses:
+        "204":
+          description: No content
+          content: 
+            application/json:
+              example:
+                null
 
-  "/1/home/:{sportName}/:{teamId}":
+  "/2/sports/:{sportName}/:{teamId}":
     get:
-      tags: ["home"]
-      summary: returns detailed information about a specific team
+      tags: ["sports"]
+      summary: returns basic information about a specific team
       parameters:
            - name: sportName
              in: path
@@ -387,84 +530,21 @@ paths:
           content:
             application/json:
               example:
-                statistics:
+                json:
                   country:
-                    id: 5
+                    id: 1
                     name: USA
-                    code: US
+                    code: null
                     flag: "https://media.api-football.com/flags/us.svg"
-                  team:
-                    id: 139
-                    name: "Denver Nuggets"
-                    logo: null
-                  quickStats:
-                    played: 
-                      home: 9
-                      away: 9
-                      all: 18
-                    wins: 15
-                    draws: 0
-                    loses: 3
-                recentGames:
-                  - id: 1911
-                    date: "2019-11-23T00:30:00+00:00"
-                    status: FT
-                    result: win
-                    court: home
-                    opponent:
-                      id: 157
-                      name: Sacramento Kings
-                      logo: null
-                    scores:
-                      home: 116
-                      away: 97
-    post:
-      tags: ["home"]
-      summary: allows the user to follow a specific team
-      parameters:
-         - name: sportName
-           in: path
-           description: name of the sport 
-           schema:
-             type: string
-           example: basketball
-           required: true
-         - name: teamId
-           in: path
-           description: id of the team 
-           schema:
-             type: integer
-           example: 139
-           required: true
-      requestBody: 
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                teamId:
-                  type: integer
-      responses:
-        "201":
-          description: success
-          content:
-            application/json:
-              example:
-                userId: 1
-                teamId: 13
-                followingAt: "2019-06-24-15.30.20"
-        "400":
-          description: bad request
-          content:
-            application/json:
-              example:
-                error:
-                  message: You already followed this team.
-                  status: 400
-                  
-  "/1/home/:{sportName}":
+                  id: 2
+                  name: "Arizona Diamondbacks"
+                  logo: "https://media.api-sports.io/baseball/teams/2.png"
+                  national: false
+      
+      
+  "/2/sports/:{sportName}/teams":
     get:
-      tags: ["home"]
+      tags: ["sports"]
       summary: returns teams of a specific sport
       parameters:
            - name: sportName
@@ -480,13 +560,149 @@ paths:
           content:
             application/json:
               example: 
-                teams:
-                  - id: 139
-                    name: Denver Nuggets
-                    logo: null
-                  - id: 137
-                    name: Cleveland Cavaliers
-                    logo: null
+                json:
+                  - country:
+                      id: 1
+                      name: USA
+                      code: null
+                      flag: "https://media.api-football.com/flags/us.svg"
+                    id: 2
+                    name: "Arizona Diamondbacks"
+                    logo: "https://media.api-sports.io/baseball/teams/2.png"
+                    national: false
+                  - country:
+                      id: 1
+                      name: USA
+                      code: null
+                      flag: "https://media.api-football.com/flags/us.svg"
+                    id: 3
+                    name: "Atlanta Braves"
+                    logo: "https://media.api-sports.io/baseball/teams/3.png"
+                    national: false
+        "404":
+          description: not found
+          content:
+            application/json:
+              example:
+                error:
+                  message: Sport not found
+                  status: 404
+        
+  "/2/sports/:{sportName}/:{teamId}/stats":
+    get:
+      tags: ["sports"]
+      summary: returns teams of a specific sport
+      parameters:
+           - name: sportName
+             in: path
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+             required: true
+           - name: teamId
+             in: path
+             description: id of the team
+             schema:
+               type: integer
+             example: 136
+             required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example: 
+                json:
+                  country:
+                    id: 1
+                    name: USA
+                    code: null
+                    flag: "https://media.api-football.com/flags/us.svg"
+                  league:
+                    id: 12
+                    name: NBA
+                    type: league
+                    season: 2021-2022
+                    logo: "https://media.api-sports.io/basketball/leagues/12.png"
+                  team:
+                    id: 136
+                    name: "Chicago Bulls"
+                    logo: "https://media.api-sports.io/basketball/teams/136.png"
+                  "games": 
+                    "played": 
+                      "home": 46
+                      "away": 45
+                      "all": 91
+
+                    "wins":
+                      "home": 
+                        "total": 30
+                        "percentage": "0.652"
+
+                      "away": 
+                        "total": 21
+                        "percentage": "0.467"
+
+                      "all": 
+                        "total": 51
+                        "percentage": "0.560"
+
+
+                    "draws": 
+                      "home": 
+                        "total": 0
+                        "percentage": "0.000"
+
+                      "away": 
+                        "total": 0
+                        "percentage": "0.000"
+
+                      "all": 
+                        "total": 0
+                        "percentage": "0.000"
+
+
+                    "loses": 
+                      "home": 
+                        "total": 16
+                        "percentage": "0.348"
+
+                      "away": 
+                        "total": 24
+                        "percentage": "0.533"
+
+                      "all": 
+                        "total": 40
+                        "percentage": "0.440"
+
+
+
+                  "points": 
+                    "for": 
+                      "total": 
+                        "home": 5228
+                        "away": 4872
+                        "all": 10100
+
+                      "average": 
+                        "home": "113.7"
+                        "away": "108.3"
+                        "all": "111.0"
+
+                    "against": 
+                      "total": 
+                        "home": 5098
+                        "away": 5021
+                        "all": 10119
+
+                      "average": 
+                        "home": "110.8"
+                        "away": "111.6"
+                        "all": "111.2"
+
+                "source": "api"
+                 
         "404":
           description: not found
           content:
@@ -496,9 +712,9 @@ paths:
                   message: Sport not found
                   status: 404
          
-  "/1/home/:{sportName}/matches":
+  "/2/sports/:{sportName}/recentGame":
     get:
-      tags: ["home"]
+      tags: ["sports"]
       summary: returns the three most recent matches of a specific sport
       parameters:
            - name: sportName
@@ -517,7 +733,90 @@ paths:
                 games:
                   - id: 1911
                     date: "2019-11-23T00:30:00+00:00"
-                    status: FT
+                    time: "01:00"
+                    timestamp: 1655427600
+                    timezone: "UTC"
+                    stage: null
+                    week: "NBA - Final"
+                    status: 
+                      long: "Game Finished"
+                      short: FT
+                      timer: null
+                    league:
+                      id: 12
+                      name: NBA
+                      type: league
+                      season: 2021-2022
+                      logo: "https://media.api-sports.io/basketball/leagues/12.png"
+                    teams:
+                      home:
+                        id: 139
+                        name: Denver Nuggets
+                        logo: null
+                      away:
+                        id: 157
+                        name: Sacramento Kings
+                        logo: null
+                    scores:
+                      home: 
+                        quarter_1: 26
+                        quarter_2: 26
+                        quarter_3: 30
+                        quarter_4: 30
+                        over_time: null
+                        total: 116
+                      away: 
+                        quarter_1: 23
+                        quarter_2: 26
+                        quarter_3: 21
+                        quarter_4: 27
+                        over_time: null
+                        total: 97
+  
+          
+  "/2/sports/:{sportName}/:{teamId}/recentGame":
+    get:
+      tags: ["sports"]
+      summary: returns the three most recent matches of a specific sport
+      parameters:
+           - name: sportName
+             in: path
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+             required: true
+           - name: teamId
+             in: path
+             description: id of the team 
+             schema:
+               type: integer
+             example: 139
+             required: true
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              example:
+                games:
+                  - id: 1911
+                    date: "2019-11-23T00:30:00+00:00"
+                    time: "01:00"
+                    timestamp: 1655427600
+                    timezone: "UTC"
+                    stage: null
+                    week: "NBA - Final"
+                    status: 
+                      long: "Game Finished"
+                      short: FT
+                      timer: null
+                    league:
+                      id: 12
+                      name: NBA
+                      type: league
+                      season: 2021-2022
+                      logo: "https://media.api-sports.io/basketball/leagues/12.png"
                     teams:
                       home:
                         id: 139
@@ -543,9 +842,9 @@ paths:
                         over_time: null
                         total: 97
                 
-  "/1/home/:{sportName}/news":
+  "/2/sports/:{sportName}/news":
     get:
-        tags: ["home"]
+        tags: ["sports"]
         summary: returns the latest news of a specific sport
         parameters:
            - name: sportName
@@ -561,21 +860,186 @@ paths:
             content: 
               application/json:
                 example:
-                  - "uuid": "387fecb4-20c2-48b4-8b54-95313592b433"
-                    "title": "Forwards Max Domi, Andreas Athanasiou sign with rebuilding Chicago Blackhawks, sources say"
-                    "description": "Free-agent forwards Max Domi and Andreas Athanasiou signed with the rebuilding Chicago Blackhawks, on identical one-year, $3 million deals, sources told ESPN on..."
-                    "keywords": "news, NHL, Chicago Blackhawks, Andreas Athanasiou, Max Domi"
-                    "snippet": "Free-agent forwards Max Domi and Andreas Athanasiou signed with the Chicago Blackhawks, on identical one-year, $3 million deals, sources told ESPN on Wednesday...."
-                    "url": "https://www.espn.com/nhl/story/_/id/34237204/forwards-max-domi-andreas-athanasiou-sign-rebuilding-chicago-blackhawks-sources-say"
-                    "image_url": "https://a2.espncdn.com/combiner/i?img=/photo/2022/0629/r1030262_1296x729_16-9.jpg"
+                  news:
+                  - "uuid": "32f67313-90af-4056-86fb-312f0c1ee3a5"
+                    "title": "Fantasy women's basketball: Azura Stevens among top waiver wire pickups during championship matchup"
+                    "description": "André Snellings goes around the WNBA and recommends five waiver wire pickups."
+                    "keywords": "WNBA, Fantasy, news - fantasy, fantasy wnba"
+                    "snippet": "I just won a nail-biter in the semi-finals of my fantasy hoops league. I edged my editor Joe Kaiser, who had the best team all season, by nine fantasy points in..."
+                    "url": "https://www.espn.com/fantasy/womens-basketball/story/_/id/34327996/fantasy-women-basketball-azura-stevens-top-waiver-wire-pickups-championship-matchup"
+                    "image_url": "https://a1.espncdn.com/combiner/i?img=%2Fphoto%2F2022%2F0801%2Fr1043067_1296x729_16%2D9.jpg"
                     "language": "en"
-                    "published_at": "2022-07-13T18:07:08.000000Z"
+                    "published_at": "2022-08-01T17:27:54.000000Z"
                     "source": "espn.com"
                     "categories": [
-                        "sports"
+                      "sports",
+                      "general"
                     ]
                     "relevance_score": null
+          "402":
+            description: request limit reached
+            content:
+              application/json:
+                example:
+                  error:
+                    message: request limit reached
+                    status: 402
 
+  "/2/profile":
+    get:
+      tags: ["profile"]
+      summary: lists user owned objects
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                "userCourses": 
+                  - "sport_name": "Soccer"
+                    "courseId": 7
+                    "course_title": "test1"
+                    "course_cover_image_url": "http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png"
+                    "course_short_description": test
+                    "course_content": soccer test
+                    "course_tips_tricks": null
+                    "difficulty": "Collegiate"
+                    "course_tutorial_video_url": "https://www.youtube.com/watch?v=aQtcAwE4xHA&t=5s&ab_channel=Unisport"
+                    "created_at": "2022-07-27T17:26:38.459Z"
+                    "user_id": 2
+                    "email": "pop@cat"
+                "userTeams": 
+                  - "team_name": "Atlanta Hawks"
+                    "team_logo": "https://media.api-sports.io/basketball/teams/132.png"
+                    "team_id": 132
+                    "team_league": "NBA"
+                    "team_sport_name": "basketball"
+                    "user_id": 2
+                    "following_at": "2022-07-27T17:35:20.589Z"
+                    "email": "pop@cat"
+                  
+        "401":
+            description: unauthorized
+            content:
+              application/json:
+                example:
+                  error:
+                    message: unauthorized
+                    status: 401
+		
+  "/2/home/:{sportName}:{teamId}":
+    post:
+      tags: ["following"]
+      summary: allows user to follow a team
+      parameters:
+           - name: sportName
+             in: path
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+             required: true
+           - name: teamId
+             in: path
+             description: id of the team 
+             schema:
+               type: integer
+             example: 139
+             required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                teamName: Boston Celtics
+                teamLogo: https://media.api-sports.io/basketball/teams/133.png
+                teamLeague: NBA
+                sportName: basketball
+                teamId: 133
+              required:
+                - teamName
+                - teamLogo
+                - teamLeague
+                - sportName
+                - teamId
+                
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example:
+                "team": 
+                  "id": 24
+                  "team_logo": "Boston Celtics"
+                  "team_id": 136
+                  "team_league": "NBA"
+                  "team_sport_name": "basketball"
+                  "user_id": 2
+                  "following_at": "2022-08-01T18:44:31.049Z"
+        "401":
+             description: unauthorized
+             content:
+               application/json:
+                 example:
+                   error:
+                     message: unauthorized
+                     status: 401
+    get:
+      tags: ["following"]
+      summary: lists followed teams by user
+      parameters:
+           - name: sportName
+             in: path
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+             required: true
+           - name: teamId
+             in: path
+             description: id of the team 
+             schema:
+               type: integer
+             example: 139
+             required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example: 
+                followedTeam:
+                  team_name: Boston Celtics
+                  team_id: 136
+                  team_sport_name: basketball
+                  email: pop@cat
+    delete:
+      tags: ["following"]
+      summary: delete followed team of user
+      parameters:
+           - name: sportName
+             in: path
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+             required: true
+           - name: teamId
+             in: path
+             description: id of the team 
+             schema:
+               type: integer
+             example: 139
+             required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              example: 
+                 deletionEntry: Entry successfully deleted!
 components:
   schemas:
     user:
@@ -647,22 +1111,22 @@ components:
         userId: 
           type: integer
           description: Id of user who created the course
-        courseTitle:
+        courseName:
           type: string
           description: title of the course
-        courseShortDescription:
+        detailedDescription:
           type: string
           description: Sentence long hook for the user to draw in readers, shown in course list page
-        courseCoverImageURL:
+        coverImageURL:
           type: string
           description: Cover image, shown in course list page
-        courseContent:
+        shortDescription:
           type: string
           description: main content of the course
-        courseTutorialVideoURL:
+        tutorialVideoURL:
           type: string
           description: URL to tutorial video 
-        courseTipsTricks:
+        tipsAndTricks:
           type: string
           description: content for tips and tricks
         created_at:
