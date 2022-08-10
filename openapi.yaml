@@ -3,14 +3,14 @@ openapi: 3.0.3
 info:
   title: Referee's Handbook API 
   description: API for Referee's Handbook, pod w3's capstone project for Codepath's SITE program 2022.
-  version: 0.2.0
+  version: 0.3.0
   
 servers:
 - url: https://jsonplaceholder.typicode.com
   description: JSONPlaceholder
   
 paths:
-  "/2/auth/login":
+  "/3/auth/login":
     post:
       tags: ["auth"]
       summary: User can login with valid credentials.
@@ -40,8 +40,7 @@ paths:
                 user:
                   id: 1
                   email: me@mail.com
-                  firstName: Doug
-                  lastName: Case
+                  fullName: Doug Case
                   username: dougcase
                   location: here
                   profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
@@ -58,7 +57,7 @@ paths:
                   message: Invalid email/password combo
                   status: 401
           
-  "/2/auth/register":
+  "/3/auth/register":
     post:
       tags: ["auth"]
       summary: User can register with valid credentials.
@@ -72,9 +71,7 @@ paths:
                   type: string
                 password:
                   type: string
-                firstName:
-                  type: string
-                lastName:
+                fullName:
                   type: string
                 username:
                   type: string
@@ -86,16 +83,14 @@ paths:
               example:
                 email: me@mail.com
                 password: pw  
-                firstName: Doug
-                lastName: Case
+                fullName: Doug Case
                 username: dougcase
                 location: here
                 profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
               required:
                 - email
                 - password
-                - firstName
-                - lastName
+                - fullName
                 - username
                 - location
                 
@@ -108,8 +103,7 @@ paths:
                 user:
                   id: 1
                   email: me@mail.com
-                  firstName: Doug
-                  lastName: Case
+                  fullName: Doug Case
                   username: dougcase
                   location: here
                   profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
@@ -126,7 +120,7 @@ paths:
                   message: "Duplicate email: me@mail.com"
                   status: 400
 
-  "/2/auth/me":
+  "/3/auth/me":
     get:
       tags: ["auth"]
       summary: get one user's profile information
@@ -140,8 +134,7 @@ paths:
               example:
                 id: 1
                 email: me@mail.com
-                firstName: Doug
-                lastName: Case
+                fullName: Doug Case
                 username: dougcase
                 location: here
                 profileImageUrl: http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png
@@ -154,8 +147,78 @@ paths:
                 error:
                   message: Unauthorized
                   status: 401
+                  
+  "/3/auth/recover" :
+    post:
+      tags: ["auth"]
+      summary: sends an email for the user to reset their password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                email: dogcage@mail.io
+              required:
+                - email
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              example:
+                "message": "If your account exists in our system, you should receive an email shortly."
+                
+  "/3/auth/password-reset":
+    post:
+      tags: ["auth"]
+      summary: sets a new password for the associated account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                newPassword: pw
+              required:
+                - newPassword
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              example:
+                "message": "Your password has been successfully reset."
 
-  "/2/learning/:{sportName}":
+  "/3/learning":
+    get:
+      tags: ["learning"]
+      summary: returns the beginner courses
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beginner"
+              example:
+                id: 1
+                sport_name: basketball
+                beginnerHistoryTimeline: "https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1xuY4upIooEeszZ_lCmeNx24eSFWe0rHe9ZdqH2xqVNk&font=Default&lang=en&initial_zoom=2&height=100%"
+                beginnerRules: Score more points than the other team to win
+                beginnerShortDescription: Learn about the sport of basketball
+                beginnerCoverImage_URL: "https://img.rawpixel.com/private/static/images/website/2022-05/upwk61914619-wikimedia-image-kowebq0k.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=1eb3b7dcd268b9a9eba66f624512f434"
+                beginnerTutorialVideoURL: "https://www.youtube.com/watch?v=CMQp0bwjokw&ab_channel=GetHandlesBasketball"
+                beginnerFieldDiagramURL: "https://cdn2.picryl.com/photo/2012/03/29/the-warrior-fitness-centers-three-basketball-courts-3a919f-1600.jpg"
+                createdAt: "2019-06-24-15.30.20"
+        "404":
+          description: not found
+          content: 
+            application/json:
+              example:
+                error:
+                  message: "course does not exist"
+                  status: 404
+
+  "/3/learning/:{sportName}":
     get:
       tags: ["learning"]
       summary: returns list of courses for a sport
@@ -210,7 +273,7 @@ paths:
                   - id: 2
                     courseName: the rainbow flick
                     detailedDescription: impressive move, though rarely used in games.
-                    coverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
+                    coverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
                 
         "404":
           description: not found
@@ -299,37 +362,7 @@ paths:
                   message: Missing courseName in request body.
                   status: 400
   
-  "/2/learning":
-    get:
-      tags: ["learning"]
-      summary: returns the beginner courses
-      responses:
-        "200":
-          description: OK
-          content: 
-            application/json:
-              schema:
-                $ref: "#/components/schemas/beginner"
-              example:
-                id: 1
-                sport_name: basketball
-                beginnerHistoryTimeline: "https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1xuY4upIooEeszZ_lCmeNx24eSFWe0rHe9ZdqH2xqVNk&font=Default&lang=en&initial_zoom=2&height=100%"
-                beginnerRules: Score more points than the other team to win
-                beginnerShortDescription: Learn about the sport of basketball
-                beginnerCoverImage_URL: "https://img.rawpixel.com/private/static/images/website/2022-05/upwk61914619-wikimedia-image-kowebq0k.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=1eb3b7dcd268b9a9eba66f624512f434"
-                beginnerTutorialVideoURL: "https://www.youtube.com/watch?v=CMQp0bwjokw&ab_channel=GetHandlesBasketball"
-                beginnerFieldDiagramURL: "https://cdn2.picryl.com/photo/2012/03/29/the-warrior-fitness-centers-three-basketball-courts-3a919f-1600.jpg"
-                createdAt: "2019-06-24-15.30.20"
-        "404":
-          description: not found
-          content: 
-            application/json:
-              example:
-                error:
-                  message: "course does not exist"
-                  status: 404
-  
-  "/2/learning/:{sportName}/beginner":
+  "/3/learning/:{sportName}/beginner":
     get:
       tags: ["learning"]
       summary: returns the beginner course for a sport
@@ -367,7 +400,7 @@ paths:
                   message: "course does not exist"
                   status: 404
                   
-  "/2/learning/:{sportName}/userCreated/:{courseId}":
+  "/3/learning/:{sportName}/userCreated/:{courseId}":
     get:
       tags: ["learning"]
       summary: returns a specific user created course for a sport
@@ -400,7 +433,7 @@ paths:
                 courseName: the rainbow flick
                 detailedDescription: impressive move, though rarely used in games.
                 shortDescription: learn to flick the soccer ball over your head by watching the tutorial video.
-                coverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
+                coverImageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/1e/Neymar_2011.jpg/170px-Neymar_2011.jpg"
                 tutorialVideoURL: "https://www.youtube.com/watch?v=aQtcAwE4xHA&feature=emb_logo&ab_channel=Unisport"
                 tipsAndTricks: practice from a standing position first.
                 difficulty: amature
@@ -504,8 +537,142 @@ paths:
             application/json:
               example:
                 null
-
-  "/2/sports/:{sportName}/:{teamId}":
+  
+  "/3/:{sportName}/userCreated/:{courseId}/user":
+    get:
+      tags: ["learning"]
+      summary: fetches user ratings for specific courseId, if any exist
+      parameters:
+         - name: sportName
+           in: path
+           description: name of the sport 
+           schema:
+             type: string
+           example: basketball
+           required: true
+         - name: courseId
+           in: path
+           description: Id of the user created course
+           schema:
+             type: integer
+           example: 6
+           required: true
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              example:
+                "rating": {
+                  "rating": 4,
+                  "user_id": 8,
+                  "course_id": 4,
+                  "created_at": "2022-08-08T15:30:38.299Z"
+                }
+   
+  "/3/:{sportName}/userCreated/:{courseId}/ratings":
+   post:
+    tags: ["learning"]
+    summary: Create a rating for a user created course
+    parameters:
+       - name: sportName
+         in: path
+         description: name of the sport 
+         schema:
+           type: string
+         example: basketball
+         required: true
+       - name: courseId
+         in: path
+         description: Id of the user created course
+         schema:
+           type: integer
+         example: 6
+         required: true
+    requestBody: 
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              rating:
+                type: number
+            example:
+              rating: 5
+            required:
+              - rating
+    responses:
+      "200":
+        description: OK
+        content: 
+          application/json:
+            example:
+              "rating": 
+                "rating": 4,
+                "user_id": 8,
+                "course_id": 4,
+                "created_at": "2022-08-08T15:30:38.299Z"
+      "400":
+        description: bad request
+        content:
+          application/json:
+            example:
+              "error": {
+                "message": "Invalid rating provided. Must be an integer between 1-5",
+                "status": 400
+              }
+   put:
+      tags: ["learning"]
+      summary: Update a rating for a user created course
+      parameters:
+         - name: sportName
+           in: path
+           description: name of the sport 
+           schema:
+             type: string
+           example: basketball
+           required: true
+         - name: courseId
+           in: path
+           description: Id of the user created course
+           schema:
+             type: integer
+           example: 6
+           required: true
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+              example:
+                rating: 5
+              required:
+                - rating
+      responses:
+        "200":
+          description: OK
+          content: 
+            application/json:
+              example:
+                "rating": 
+                  "rating": 4,
+                  "user_id": 8,
+                  "course_id": 4,
+                  "created_at": "2022-08-08T15:30:38.299Z"
+        "400":
+          description: bad request
+          content:
+            application/json:
+              example:
+                "error": {
+                  "message": "Invalid rating provided. Must be an integer between 1-5",
+                  "status": 400
+                }
+                
+  "/3/sports/:{sportName}/:{teamId}":
     get:
       tags: ["sports"]
       summary: returns basic information about a specific team
@@ -542,7 +709,7 @@ paths:
                   national: false
       
       
-  "/2/sports/:{sportName}/teams":
+  "/3/sports/:{sportName}/teams":
     get:
       tags: ["sports"]
       summary: returns teams of a specific sport
@@ -588,7 +755,7 @@ paths:
                   message: Sport not found
                   status: 404
         
-  "/2/sports/:{sportName}/:{teamId}/stats":
+  "/3/sports/:{sportName}/:{teamId}/stats":
     get:
       tags: ["sports"]
       summary: returns teams of a specific sport
@@ -712,7 +879,7 @@ paths:
                   message: Sport not found
                   status: 404
          
-  "/2/sports/:{sportName}/recentGame":
+  "/3/sports/:{sportName}/recentGame":
     get:
       tags: ["sports"]
       summary: returns the three most recent matches of a specific sport
@@ -774,7 +941,7 @@ paths:
                         total: 97
   
           
-  "/2/sports/:{sportName}/:{teamId}/recentGame":
+  "/3/sports/:{sportName}/:{teamId}/recentGame":
     get:
       tags: ["sports"]
       summary: returns the three most recent matches of a specific sport
@@ -842,7 +1009,7 @@ paths:
                         over_time: null
                         total: 97
                 
-  "/2/sports/:{sportName}/news":
+  "/3/sports/:{sportName}/news":
     get:
         tags: ["sports"]
         summary: returns the latest news of a specific sport
@@ -885,7 +1052,7 @@ paths:
                     message: request limit reached
                     status: 402
 
-  "/2/profile":
+  "/3/profile":
     get:
       tags: ["profile"]
       summary: lists user owned objects
@@ -895,6 +1062,7 @@ paths:
           content:
             application/json:
               example:
+                "userReceivedRatings": []
                 "userCourses": 
                   - "sport_name": "Soccer"
                     "courseId": 7
@@ -926,8 +1094,70 @@ paths:
                   error:
                     message: unauthorized
                     status: 401
-		
-  "/2/home/:{sportName}:{teamId}":
+	
+  "/3/profile/:{username}":
+      get:
+        tags: ["profile"]
+        summary: list all user created courses owned by a searched user, along with all their followed sports teams
+        parameters:
+           - name: username
+             in: path
+             description: name of the sport 
+             schema:
+               type: string
+             example: basketball
+             required: true
+        responses:
+          "200":
+            description: OK
+            content:
+              application/json:
+                example:
+                    "userCourses": 
+                      - "sport_name": "Soccer"
+                        "courseId": 7
+                        "course_title": "test1"
+                        "course_cover_image_url": "http://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG.png"
+                        "course_short_description": test
+                        "course_content": soccer test
+                        "course_tips_tricks": null
+                        "difficulty": "Collegiate"
+                        "course_tutorial_video_url": "https://www.youtube.com/watch?v=aQtcAwE4xHA&t=5s&ab_channel=Unisport"
+                        "created_at": "2022-07-27T17:26:38.459Z"
+                        "user_id": 2
+                        "email": "pop@cat"
+                    "userTeams": 
+                      - "team_name": "Atlanta Hawks"
+                        "team_logo": "https://media.api-sports.io/basketball/teams/132.png"
+                        "team_id": 132
+                        "team_league": "NBA"
+                        "team_sport_name": "basketball"
+                        "user_id": 2
+                        "following_at": "2022-07-27T17:35:20.589Z"
+                        "email": "pop@cat"
+                    "userInformation": 
+                      "username": "dogcage"
+                      "full_name": "Doug Case"
+                      "location": "Pleasanton, CA"
+                      "profile_image_url": null,
+                      "created_at": "2022-08-07T19:10:23.882Z"
+                      "email": "doug@case.io"
+                    "userReceivedRatings": 
+                      - "course_title": "How to Play Like Lebron"
+                        "rating": 3
+                      - "course_title": "How to Shoot Like Steph"
+                        "rating": 3
+
+          "401":
+              description: unauthorized
+              content:
+                application/json:
+                  example:
+                    error:
+                      message: unauthorized
+                      status: 401
+  
+  "/3/home/:{sportName}:{teamId}":
     post:
       tags: ["following"]
       summary: allows user to follow a team
